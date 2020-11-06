@@ -20,22 +20,22 @@
     if($item->name != null){
         // create array
         $emp_arr = array(
-            "id" => $id,
-            "name" => $name,
-            "color" => $color, 
-            "birth_date_d" => $birth_date_d,
-            "birth_date_m" => $birth_date_m, 
-            "birth_date_y" => $birth_date_y, 
-            "death_date_d" => $death_date_d,
-            "death_date_m" => $death_date_m, 
-            "death_date_y" => $death_date_y, 
-            "is_alive" => $is_alive,
-            "death_reason" => $death_reason,
-            "arrival_date_d" => $arrival_date_d,
-            "arrival_date_m" => $arrival_date_m, 
-            "arrival_date_y" => $arrival_date_y, 
-            "description" => $description,
-            "created" => $created
+            "id" => $item->id,
+            "name" => $item->name,
+            "color" => $item->color, 
+            "birth_date_d" => $item->birth_date_d,
+            "birth_date_m" => $item->birth_date_m, 
+            "birth_date_y" => $item->birth_date_y, 
+            "death_date_d" => $item->death_date_d,
+            "death_date_m" => $item->death_date_m, 
+            "death_date_y" => $item->death_date_y, 
+            "is_alive" => $item->is_alive,
+            "death_reason" => $item->death_reason,
+            "arrival_date_d" => $item->arrival_date_d,
+            "arrival_date_m" => $item->arrival_date_m, 
+            "arrival_date_y" => $item->arrival_date_y, 
+            "description" => $item->description,
+            "created" => $item->created
         );
       
         http_response_code(200);

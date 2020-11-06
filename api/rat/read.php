@@ -8,7 +8,7 @@
     $database = new Database();
     $db = $database->getConnection();
 
-    $items = new rat($db);
+    $items = new Rat($db);
 
     $stmt = $items->getRats();
     $itemCount = $stmt->rowCount();

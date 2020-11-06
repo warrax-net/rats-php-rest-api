@@ -29,10 +29,10 @@
     $item->arrival_date_m = $data->arrival_date_m; 
     $item->arrival_date_y = $data->arrival_date_y; 
     $item->description = $data->description;
-   
-    if($item->createRat()){
+    $response = $item->createRat();
+    if($response === true){
         echo 'Rat created successfully.';
     } else{
-        echo 'Rat could not be created.';
+        var_dump($response);
     }
 ?>
