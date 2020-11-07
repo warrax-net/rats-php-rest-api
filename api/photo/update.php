@@ -34,7 +34,7 @@
     $item->description = $data->description;
     
     if($item->updatePhoto()){
-        echo json_encode("Photo data updated.");
+        echo json_encode("Данные фото обновлены.");
     } else{
         echo json_encode("Data could not be updated");
     }

@@ -13,9 +13,6 @@
     $stmt = $items->getRats();
     $itemCount = $stmt->rowCount();
 
-
-    // // echo json_encode($itemCount);
-
     if($itemCount > 0){
         
         $ratArr = array();
@@ -51,7 +48,7 @@
     else{
         http_response_code(404);
         echo json_encode(
-            array("message" => "No record found.")
+            array("message" => "Ничего не найдено.")
         );
     }
 ?>

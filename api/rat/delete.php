@@ -18,7 +18,7 @@
     $item->id = $data->id;
     
     if($item->deleteRat()){
-        echo json_encode("Rat deleted.");
+        echo json_encode("Крыса удалена.");
     } else{
         echo json_encode("Data could not be deleted");
     }

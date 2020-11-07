@@ -31,7 +31,7 @@
     $item->description = $data->description;
     $response = $item->createRat();
     if($response === true){
-        echo 'Rat created successfully.';
+        echo 'Крыса создана!';
     } else{
         var_dump($response);
     }

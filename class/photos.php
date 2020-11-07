@@ -17,8 +17,8 @@
         public $date_m;
         public $date_y;
 
-        public $rat_id;
-        public $rp_id;
+        public $rat_ids;
+        public $rp_ids;
 
         // Db connection
         public function __construct($db){
@@ -27,10 +27,36 @@
 
         // GET ALL
         public function getPhotos(){
-        $sqlQuery = "SELECT * FROM {$this->db_table}";
-            $stmt = $this->conn->prepare($sqlQuery);
+            $query = "SELECT * FROM {$this->db_table} ORDER BY id";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(1, $this->rat_id);
             $stmt->execute();
-            return $stmt;
+            $arr = [];
+            $i = 0;
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $arr[$i]['id'] = $row['id'];
+                $arr[$i]['title'] = $row['title'];
+                $arr[$i]['description'] = $row['description'];
+                $arr[$i]['url'] = $row['url'];
+                $arr[$i]['date_d'] = $row['date_d'];
+                $arr[$i]['date_m'] = $row['date_m'];
+                $arr[$i]['date_y'] = $row['date_y'];
+                $ratArray = [];
+                $sqlQuery = "SELECT rp.* FROM {$this->db_table} AS p JOIN rat_photo_ids AS rp ON p.id = rp.photo_id WHERE p.id = ? ORDER BY p.id, rp.id";
+                $stmt2 = $this->conn->prepare($sqlQuery);
+
+                $stmt2->bindParam(1, $row['id']);
+
+                $stmt2->execute();
+                while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
+                    array_push($ratArray, $row2['rat_id']);
+                }
+                $arr[$i]['rat_ids'] = $ratArray;
+                $i++;
+                // print_r($ratArray);
+            }
+            // var_dump($arr);
+            return $arr;
         }
 
         // CREATE
@@ -54,20 +80,40 @@
             $this->url=htmlspecialchars(strip_tags($this->url));
             $this->date_d=htmlspecialchars(strip_tags($this->date_d));
             $this->date_m=htmlspecialchars(strip_tags($this->date_m));
-            $this->date_y=htmlspecialchars(strip_tags($this->date_y));
+            $this->date_y=htmlspecialchars(strip_tags($this->date_y));          
+
+            $bool = $stmt->execute([
+                'title'      => $this->title,
+                'description' => $this->description,
+                'url'         => $this->url,
+                'date_d'      => $this->date_d,
+                'date_m'      => $this->date_m,
+                'date_y'      => $this->date_y,
+            ]);
+
+            $photo_id = $this->conn->lastInsertId();
             
-            // bind data
-            $stmt->bindParam(":title", $this->title);
-            $stmt->bindParam(":description", $this->description);
-            $stmt->bindParam(":url", $this->url);
-            $stmt->bindParam(":date_d", $this->date_d);
-            $stmt->bindParam(":date_m", $this->date_m);
-            $stmt->bindParam(":date_y", $this->date_y);
+            foreach($this->rat_ids as $rat_id) {
+                $sqlQuery = "INSERT INTO
+                        {$this->link_table}
+                    SET
+                        rat_id = :rat_id, 
+                        photo_id = :photo_id
+                    ";
         
-            if($stmt->execute()){
-               return true;
+                $stmt2 = $this->conn->prepare($sqlQuery);
+                
+                if (!$stmt2->execute([
+                    'rat_id'      => $rat_id,
+                    'photo_id'      => $photo_id,
+                ])) {
+                    return $stmt2->errorInfo();
+                }
             }
-            return false;
+            if ($bool) {
+                return $bool;
+            }
+            return $stmt->errorInfo();
         }
 
         // UPDATE
@@ -98,7 +144,7 @@
             $stmt->bindParam(1, $this->rat_id);
 
             $stmt->execute();
-
+            
             $dataRow = $stmt->fetch(PDO::FETCH_ASSOC);
             $this->id=$dataRow['id'];
             $this->rp_id=$dataRow['rp_id'];

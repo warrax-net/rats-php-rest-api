@@ -18,7 +18,7 @@
     $item->id = $data->id;
     
     if($item->deletePhoto()){
-        echo json_encode("Photo deleted.");
+        echo json_encode("Фото удалено.");
     } else{
         echo json_encode("Data could not be deleted");
     }

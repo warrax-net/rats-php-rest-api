@@ -34,7 +34,7 @@
     $item->description = $data->description;
     
     if($item->updateRat()){
-        echo json_encode("Rat data updated.");
+        echo json_encode("Данные крысы обновлены.");
     } else{
         echo json_encode("Data could not be updated");
     }

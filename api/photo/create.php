@@ -15,24 +15,18 @@
 
     $data = json_decode(file_get_contents("php://input"));
 
-    $item->name = $data->name; 
-    $item->color = $data->color; 
-    $item->birth_date_d = $data->birth_date_d;
-    $item->birth_date_m = $data->birth_date_m; 
-    $item->birth_date_y = $data->birth_date_y; 
-    $item->death_date_d = $data->death_date_d; 
-    $item->death_date_m = $data->death_date_m; 
-    $item->death_date_y = $data->death_date_y; 
-    $item->is_alive = $data->is_alive;
-    $item->death_reason = $data->death_reason;
-    $item->arrival_date_d = $data->arrival_date_d;
-    $item->arrival_date_m = $data->arrival_date_m; 
-    $item->arrival_date_y = $data->arrival_date_y; 
-    $item->description = $data->description;
-   
-    if($item->createPhoto()){
-        echo 'Photo created successfully.';
+    $item->title = $data->title; 
+    $item->description = $data->description; 
+    $item->date_d = $data->date_d;
+    $item->date_m = $data->date_m; 
+    $item->date_y = $data->date_y; 
+    $item->url = $data->url; 
+    $item->rat_ids = $data->rat_ids;
+
+    $response = $item->createPhoto();
+    if($response === true){
+        echo 'Фото создано!';
     } else{
-        echo 'Photo could not be created.';
+        var_dump($response);
     }
 ?>

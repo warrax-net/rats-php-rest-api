@@ -8,50 +8,38 @@
     $database = new Database();
     $db = $database->getConnection();
 
-    $items = new photo($db);
+    $items = new Photo($db);
 
     $stmt = $items->getPhotos();
-    $itemCount = $stmt->rowCount();
-
-
-    // echo json_encode($itemCount);
-
+    $itemCount = count($stmt);
     if($itemCount > 0){
-        
         $photoArr = array();
         $photoArr["body"] = array();
         $photoArr["itemCount"] = $itemCount;
-
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
-            extract($row);
-            $e = array(
-                "id" => $id,
-                "name" => $name,
-                "color" => $color, 
-                "birth_date_d" => $birth_date_d,
-                "birth_date_m" => $birth_date_m, 
-                "birth_date_y" => $birth_date_y, 
-                "death_date_d" => $death_date_d,
-                "death_date_m" => $death_date_m, 
-                "death_date_y" => $death_date_y, 
-                "is_alive" => $is_alive,
-                "death_reason" => $death_reason,
-                "arrival_date_d" => $arrival_date_d,
-                "arrival_date_m" => $arrival_date_m, 
-                "arrival_date_y" => $arrival_date_y, 
-                "description" => $description,
-                "created" => $created
-            );
-
-            array_push($photoArr["body"], $e);
+        foreach ($stmt as $item) {
+            if($item['title'] != null){
+                // create array
+                $e = array(
+                    "id" => $item['id'],
+                    "title" => $item['title'],
+                    "date_d" => $item['date_d'],
+                    "date_m" => $item['date_m'], 
+                    "date_y" => $item['date_y'], 
+                    "rat_ids" => $item['rat_ids'], 
+                    "description" => $item['description'],
+                    "url" => $item['url']
+                );
+            
+                array_push($photoArr["body"], $e);
+            }
         }
-        echo json_encode($photoArr);
-    }
 
-    else{
+        http_response_code(200);
+        echo json_encode($photoArr);
+    } else {
         http_response_code(404);
         echo json_encode(
-            array("message" => "No record found.")
+            array("message" => "Ничего не найдено.")
         );
     }
 ?>
