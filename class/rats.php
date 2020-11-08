@@ -77,23 +77,7 @@
                 $this->arrival_date_m=htmlspecialchars(strip_tags($this->arrival_date_m));
                 $this->arrival_date_y=htmlspecialchars(strip_tags($this->arrival_date_y));
                 $this->description=htmlspecialchars(strip_tags($this->description));
-                    
-                // // bind data
-                // $stmt->bindParam(":name", $this->name);
-                // $stmt->bindParam(":color", $this->color);
-                // $stmt->bindParam(":birth_date_d", $this->birth_date_d);
-                // $stmt->bindParam(":birth_date_m", $this->birth_date_m);
-                // $stmt->bindParam(":birth_date_y", $this->birth_date_y);
-                // $stmt->bindParam(":death_date_d", $this->death_date_d);
-                // $stmt->bindParam(":death_date_m", $this->death_date_m);
-                // $stmt->bindParam(":death_date_y", $this->death_date_y);
-                // $stmt->bindParam(":is_alive", $this->is_alive);
-                // $stmt->bindParam(":death_reason", $this->death_reason);
-                // $stmt->bindParam(":arrival_date_d", $this->arrival_date_d);
-                // $stmt->bindParam(":arrival_date_m", $this->arrival_date_m);
-                // $stmt->bindParam(":arrival_date_y", $this->arrival_date_y);
-                // $stmt->bindParam(":description", $this->description);
-            
+                               
                 if($stmt->execute([
                     'name'      => $this->name,
                     'color'      => $this->color,
@@ -151,58 +135,71 @@
 
         // UPDATE
         public function updateRat(){
-            $sqlQuery = "UPDATE
-                        {$this->db_table}
-                    SET
-                        name = :name, 
-                        color = :color, 
-                        birth_date_d = :birth_date_d, 
-                        birth_date_m = :birth_date_m, 
-                        birth_date_y = :birth_date_y, 
-                        death_date_d = :death_date_d, 
-                        death_date_m = :death_date_m, 
-                        death_date_y = :death_date_y, 
-                        is_alive = :is_alive, 
-                        death_reason = :death_reason, 
-                        arrival_date_d = :arrival_date_d, 
-                        arrival_date_m = :arrival_date_m, 
-                        arrival_date_y = :arrival_date_y, 
-                        description = :description, 
-                        created = :created
-                    WHERE 
-                        id = :id";
-        
-            $stmt = $this->conn->prepare($sqlQuery);
-        
-            $this->name=htmlspecialchars(strip_tags($this->name));
-            $this->email=htmlspecialchars(strip_tags($this->email));
-            $this->age=htmlspecialchars(strip_tags($this->age));
-            $this->designation=htmlspecialchars(strip_tags($this->designation));
-            $this->created=htmlspecialchars(strip_tags($this->created));
-            $this->id=htmlspecialchars(strip_tags($this->id));
-        
-            // bind data
-            $stmt->bindParam(":name", $this->name);
-            $stmt->bindParam(":color", $this->color);
-            $stmt->bindParam(":birth_date_d", $this->birth_date_d);
-            $stmt->bindParam(":birth_date_m", $this->birth_date_m);
-            $stmt->bindParam(":birth_date_y", $this->birth_date_y);
-            $stmt->bindParam(":death_date_d", $this->death_date_d);
-            $stmt->bindParam(":death_date_m", $this->death_date_m);
-            $stmt->bindParam(":death_date_y", $this->death_date_y);
-            $stmt->bindParam(":is_alive", $this->is_alive);
-            $stmt->bindParam(":death_reason", $this->death_reason);
-            $stmt->bindParam(":arrival_date_d", $this->arrival_date_d);
-            $stmt->bindParam(":arrival_date_m", $this->arrival_date_m);
-            $stmt->bindParam(":arrival_date_y", $this->arrival_date_y);
-            $stmt->bindParam(":description", $this->description);
-            $stmt->bindParam(":created", $this->created);
-            $stmt->bindParam(":id", $this->id);
-        
-            if($stmt->execute()){
-               return true;
+            try
+            { 
+                $sqlQuery = "UPDATE
+                            {$this->db_table}
+                        SET
+                            name = :name, 
+                            color = :color, 
+                            birth_date_d = :birth_date_d, 
+                            birth_date_m = :birth_date_m, 
+                            birth_date_y = :birth_date_y, 
+                            death_date_d = :death_date_d, 
+                            death_date_m = :death_date_m, 
+                            death_date_y = :death_date_y, 
+                            is_alive = :is_alive, 
+                            death_reason = :death_reason, 
+                            arrival_date_d = :arrival_date_d, 
+                            arrival_date_m = :arrival_date_m, 
+                            arrival_date_y = :arrival_date_y, 
+                            description = :description
+                        WHERE 
+                            id = :id";
+            
+                $stmt = $this->conn->prepare($sqlQuery);
+            
+                // sanitize
+                $this->name=htmlspecialchars(strip_tags($this->name));
+                $this->color=htmlspecialchars(strip_tags($this->color));
+                $this->birth_date_d=htmlspecialchars(strip_tags($this->birth_date_d));
+                $this->birth_date_m=htmlspecialchars(strip_tags($this->birth_date_m));
+                $this->birth_date_y=htmlspecialchars(strip_tags($this->birth_date_y));
+                $this->death_date_d=htmlspecialchars(strip_tags($this->death_date_d));
+                $this->death_date_m=htmlspecialchars(strip_tags($this->death_date_m));
+                $this->death_date_y=htmlspecialchars(strip_tags($this->death_date_y));
+                $this->is_alive=htmlspecialchars(strip_tags($this->is_alive));
+                $this->death_reason=htmlspecialchars(strip_tags($this->death_reason));
+                $this->arrival_date_d=htmlspecialchars(strip_tags($this->arrival_date_d));
+                $this->arrival_date_m=htmlspecialchars(strip_tags($this->arrival_date_m));
+                $this->arrival_date_y=htmlspecialchars(strip_tags($this->arrival_date_y));
+                $this->description=htmlspecialchars(strip_tags($this->description));
+            
+                if($stmt->execute([
+                    'id'       => $this->id,
+                    'name'      => $this->name,
+                    'color'      => $this->color,
+                    'birth_date_d'      => $this->birth_date_d,
+                    'birth_date_m'      => $this->birth_date_m,
+                    'birth_date_y'      => $this->birth_date_y,
+                    'death_date_d'      => $this->death_date_d,
+                    'death_date_m'      => $this->death_date_m,
+                    'death_date_y'      => $this->death_date_y,
+                    'is_alive'      => $this->is_alive,
+                    'death_reason'      => $this->death_reason,
+                    'arrival_date_d'      => $this->arrival_date_d,
+                    'arrival_date_m'      => $this->arrival_date_m,
+                    'arrival_date_y'      => $this->arrival_date_y,
+                    'description'      => $this->description
+                ])){
+                    return true;
+                }
+                return $stmt->errorInfo();
             }
-            return false;
+            catch(PDOException $e)
+            {
+                return $e->getMessage();
+            }
         }
 
         // DELETE

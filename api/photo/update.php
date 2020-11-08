@@ -18,24 +18,18 @@
     $item->id = $data->id;
     
     // photo values
-    $item->name = $data->name; 
-    $item->color = $data->color; 
-    $item->birth_date_d = $data->birth_date_d;
-    $item->birth_date_m = $data->birth_date_m; 
-    $item->birth_date_y = $data->birth_date_y; 
-    $item->death_date_d = $data->death_date_d; 
-    $item->death_date_m = $data->death_date_m; 
-    $item->death_date_y = $data->death_date_y; 
-    $item->is_alive = $data->is_alive;
-    $item->death_reason = $data->death_reason;
-    $item->arrival_date_d = $data->arrival_date_d;
-    $item->arrival_date_m = $data->arrival_date_m; 
-    $item->arrival_date_y = $data->arrival_date_y; 
-    $item->description = $data->description;
+    $item->title = $data->title; 
+    $item->description = $data->description; 
+    $item->date_d = $data->date_d;
+    $item->date_m = $data->date_m; 
+    $item->date_y = $data->date_y; 
+    $item->url = $data->url; 
+    $item->rat_ids = $data->rat_ids;
     
-    if($item->updatePhoto()){
-        echo json_encode("Данные фото обновлены.");
+    $response = $item->updatePhoto();
+    if($response === true){
+        echo 'Данные крысы обновлены!';
     } else{
-        echo json_encode("Data could not be updated");
+        var_dump($response);
     }
 ?>

@@ -159,7 +159,7 @@
 
         // UPDATE
         public function updatePhoto(){
-            $sqlQuery = "UPDATE
+            $sqlQuery = "UPDATE IGNORE 
                         {$this->db_table}
                     SET
                         title = :title, 
@@ -173,26 +173,68 @@
         
             $stmt = $this->conn->prepare($sqlQuery);
         
-            $this->name=htmlspecialchars(strip_tags($this->name));
-            $this->email=htmlspecialchars(strip_tags($this->email));
-            $this->age=htmlspecialchars(strip_tags($this->age));
-            $this->designation=htmlspecialchars(strip_tags($this->designation));
-            $this->created=htmlspecialchars(strip_tags($this->created));
-            $this->id=htmlspecialchars(strip_tags($this->id));
+            // sanitize
+            $this->title=htmlspecialchars(strip_tags($this->title));
+            $this->description=htmlspecialchars(strip_tags($this->description));
+            $this->url=htmlspecialchars(strip_tags($this->url));
+            $this->date_d=htmlspecialchars(strip_tags($this->date_d));
+            $this->date_m=htmlspecialchars(strip_tags($this->date_m));
+            $this->date_y=htmlspecialchars(strip_tags($this->date_y));   
         
-            // bind data
-            $stmt->bindParam(":title", $this->title);
-            $stmt->bindParam(":description", $this->description);
-            $stmt->bindParam(":url", $this->url);
-            $stmt->bindParam(":date_d", $this->date_d);
-            $stmt->bindParam(":date_m", $this->date_m);
-            $stmt->bindParam(":date_y", $this->date_y);
-            $stmt->bindParam(":id", $this->id);
-        
-            if($stmt->execute()){
-               return true;
+            $bool = $stmt->execute([
+                'id'      => $this->id,
+                'title'      => $this->title,
+                'description' => $this->description,
+                'url'         => $this->url,
+                'date_d'      => $this->date_d,
+                'date_m'      => $this->date_m,
+                'date_y'      => $this->date_y,
+            ]);
+
+            $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+
+            $photo_id = $this->id;
+            
+            $deleteQuery = "DELETE FROM
+            {$this->link_table}
+                WHERE
+                    photo_id = :photo_id
+                ";
+
+            $stmtd = $this->conn->prepare($deleteQuery);
+            
+            if (!$stmtd->execute([
+                'photo_id'      => $photo_id,
+            ])) {
+                return $stmtd->errorInfo();
             }
-            return false;
+
+            $stmtd->fetchAll(PDO::FETCH_ASSOC);
+            $stmtd->closeCursor();
+            foreach($this->rat_ids as $rat_id) {
+                $sqlQuery = "INSERT INTO
+                        {$this->link_table}
+                    SET
+                        rat_id = :rat_id, 
+                        photo_id = :photo_id
+                    ";
+        
+                $stmt2 = $this->conn->prepare($sqlQuery);
+                
+                if (!$stmt2->execute([
+                    'rat_id'      => $rat_id,
+                    'photo_id'      => $photo_id,
+                ])) {
+                    return $stmt2->errorInfo();
+                }
+                $stmt2->fetchAll(PDO::FETCH_ASSOC);
+                $stmt2->closeCursor();
+            }
+            if ($bool) {
+                return $bool;
+            }
+            return $stmt->errorInfo();
         }
 
         // DELETE

@@ -32,10 +32,10 @@
     $item->arrival_date_m = $data->arrival_date_m; 
     $item->arrival_date_y = $data->arrival_date_y; 
     $item->description = $data->description;
-    
-    if($item->updateRat()){
-        echo json_encode("Данные крысы обновлены.");
+    $response = $item->updateRat();
+    if($response === true){
+        echo 'Данные крысы обновлены!';
     } else{
-        echo json_encode("Data could not be updated");
+        var_dump($response);
     }
 ?>
