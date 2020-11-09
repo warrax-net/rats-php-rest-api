@@ -25,7 +25,8 @@
                     "date_d" => $item['date_d'],
                     "date_m" => $item['date_m'], 
                     "date_y" => $item['date_y'], 
-                    "rat_ids" => $item['rat_ids'], 
+                    "rat_ids" => $item['rat_ids'],
+                    "is_video" => $item['is_video'], 
                     "description" => $item['description'],
                     "url" => $item['url']
                 );

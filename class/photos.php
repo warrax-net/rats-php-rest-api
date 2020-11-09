@@ -12,6 +12,7 @@
         public $id;
         public $title;
         public $description;
+        public $is_video;
         public $url;
         public $date_d;
         public $date_m;
@@ -37,6 +38,7 @@
                 $arr[$i]['id'] = $row['id'];
                 $arr[$i]['title'] = $row['title'];
                 $arr[$i]['description'] = $row['description'];
+                $arr[$i]['is_video'] = $row['is_video'];
                 $arr[$i]['url'] = $row['url'];
                 $arr[$i]['date_d'] = $row['date_d'];
                 $arr[$i]['date_m'] = $row['date_m'];
@@ -66,6 +68,7 @@
                     SET
                         title = :title, 
                         description = :description, 
+                        is_video = :is_video,
                         url = :url, 
                         date_d = :date_d, 
                         date_m = :date_m, 
@@ -80,11 +83,13 @@
             $this->url=htmlspecialchars(strip_tags($this->url));
             $this->date_d=htmlspecialchars(strip_tags($this->date_d));
             $this->date_m=htmlspecialchars(strip_tags($this->date_m));
-            $this->date_y=htmlspecialchars(strip_tags($this->date_y));          
+            $this->date_y=htmlspecialchars(strip_tags($this->date_y));    
+            $this->is_video=htmlspecialchars(strip_tags($this->is_video));        
 
             $bool = $stmt->execute([
-                'title'      => $this->title,
+                'title'       => $this->title,
                 'description' => $this->description,
+                'is_video'    => $this->is_video,
                 'url'         => $this->url,
                 'date_d'      => $this->date_d,
                 'date_m'      => $this->date_m,
@@ -127,13 +132,14 @@
             $stmt->execute();
 
             $dataRow = $stmt->fetch(PDO::FETCH_ASSOC);
-            $this->id=$dataRow['id'];
-            $this->title=$dataRow['name'];
-            $this->description=$dataRow['description'];
-            $this->url=$dataRow['url'];
-            $this->date_d=$dataRow['date_d'];
-            $this->date_m=$dataRow['date_m'];
-            $this->date_y=$dataRow['date_y'];
+            $this->id = $dataRow['id'];
+            $this->title = $dataRow['name'];
+            $this->description = $dataRow['description'];
+            $this->url = $dataRow['url'];
+            $this->is_video = $dataRow['is_video'];
+            $this->date_d = $dataRow['date_d'];
+            $this->date_m = $dataRow['date_m'];
+            $this->date_y = $dataRow['date_y'];
         }        
 
         public function getPhotosForPhotoId(){
@@ -152,6 +158,7 @@
             $this->title=$dataRow['name'];
             $this->description=$dataRow['description'];
             $this->url=$dataRow['url'];
+            $this->is_video = $dataRow['is_video'];
             $this->date_d=$dataRow['date_d'];
             $this->date_m=$dataRow['date_m'];
             $this->date_y=$dataRow['date_y'];
@@ -163,6 +170,7 @@
                         {$this->db_table}
                     SET
                         title = :title, 
+                        is_video = :is_video,
                         description = :description, 
                         url = :url, 
                         date_d = :date_d, 
@@ -180,12 +188,14 @@
             $this->date_d=htmlspecialchars(strip_tags($this->date_d));
             $this->date_m=htmlspecialchars(strip_tags($this->date_m));
             $this->date_y=htmlspecialchars(strip_tags($this->date_y));   
+            $this->is_video=htmlspecialchars(strip_tags($this->is_video));  
         
             $bool = $stmt->execute([
                 'id'      => $this->id,
                 'title'      => $this->title,
                 'description' => $this->description,
                 'url'         => $this->url,
+                'is_video'    => $this->is_video,
                 'date_d'      => $this->date_d,
                 'date_m'      => $this->date_m,
                 'date_y'      => $this->date_y,
@@ -251,7 +261,6 @@
             }
             return false;
         }
-
     }
 ?>
 

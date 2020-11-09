@@ -1,9 +1,9 @@
 <?php 
     class Database {
-        private $host = "127.0.0.1";
-        private $database_name = "warrax_rats_db";
-        private $username = "root";
-        private $password = "wizzard";
+        private $host = "d84116.mysql.zonevs.eu";
+        private $database_name = "d84116_warraxrat";
+        private $username = "d84116sa334290";
+        private $password = "883i0A6&vbTIp&A2QyYD";
 
         public $conn;
 

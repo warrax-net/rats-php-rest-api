@@ -21,6 +21,7 @@
     $item->date_m = $data->date_m; 
     $item->date_y = $data->date_y; 
     $item->url = $data->url; 
+    $item->is_video = $data->is_video;
     $item->rat_ids = $data->rat_ids;
 
     $response = $item->createPhoto();
