@@ -1,6 +1,9 @@
 <?php
     header("Access-Control-Allow-Origin: *");
     header("Content-Type: application/json; charset=UTF-8");
+    header("Access-Control-Allow-Methods: POST");
+    header("Access-Control-Max-Age: 3600");
+    header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
     
     include_once '../../config/database.php';
     include_once '../../class/photos.php';
@@ -9,7 +12,11 @@
     $db = $database->getConnection();
 
     $items = new Photo($db);
-    $stmt = $items->getPhotos();
+
+    $data = json_decode(file_get_contents("php://input"));
+    
+    $stmt = $items->getPhotosQuery($data->all_alive, $data->rat_ids, $data->date_m, $data->date_y);
+    
     $itemCount = count($stmt);
     if($itemCount > 0){
         $photoArr = array();

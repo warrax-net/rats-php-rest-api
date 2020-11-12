@@ -30,7 +30,6 @@
         public function getPhotos(){
             $query = "SELECT * FROM {$this->db_table} ORDER BY id";
             $stmt = $this->conn->prepare($query);
-            $stmt->bindParam(1, $this->rat_id);
             $stmt->execute();
             $arr = [];
             $i = 0;
@@ -55,9 +54,65 @@
                 }
                 $arr[$i]['rat_ids'] = $ratArray;
                 $i++;
-                // print_r($ratArray);
             }
-            // var_dump($arr);
+
+            return $arr;
+        }
+
+        public function getPhotosQuery($all_alive, $rat_ids, $date_m, $date_y){
+            $and_date_d = "";
+            if (isset($date_m) && $date_m > 0 && isset($date_y) && $date_y > 0) {
+                $and_date_d = "AND ( (p.date_m >= {$date_m} AND p.date_y = {$date_y}) OR (p.date_y > {$date_y}) )";
+            } else if ($date_m < 0 && (isset($date_y) && $date_y > 0)) {
+                $and_date_d = " AND (p.date_y >= {$date_y}) ";
+            } else if ($date_y < 0 && (isset($date_m) && $date_m > 0)) {
+                $and_date_d = " AND p.date_m = {$date_m} ";
+            }
+            $query = "";
+            if ($all_alive == 1 || empty($rat_ids)) {
+                $query = "SELECT DISTINCT p.* FROM {$this->db_table} AS p JOIN rat_photo_ids AS rp ON p.id = rp.photo_id JOIN rats as r ON rp.rat_id = r.id WHERE r.is_alive = 1 " . $and_date_d . " ORDER BY p.id";
+
+            } else {
+                $and_rats = " r.id IN (";
+                $i = 0;
+                foreach ($rat_ids as $rat_id) {
+                    if ($i == 0) {
+                        $and_rats = $and_rats . $rat_id;
+                    } else {
+                        $and_rats = $and_rats . ", " . $rat_id;
+                    }
+                }
+                $and_rats = $and_rats . ')';
+                $query = "SELECT DISTINCT p.* FROM {$this->db_table} AS p JOIN rat_photo_ids AS rp ON p.id = rp.photo_id JOIN rats as r ON rp.rat_id = r.id WHERE " . $and_rats . $and_date_d . " ORDER BY p.id";
+            }
+            // return $query;
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute();
+
+            $arr = [];
+            $i = 0;
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $arr[$i]['id'] = $row['id'];
+                $arr[$i]['title'] = $row['title'];
+                $arr[$i]['description'] = $row['description'];
+                $arr[$i]['is_video'] = $row['is_video'];
+                $arr[$i]['url'] = $row['url'];
+                $arr[$i]['date_d'] = $row['date_d'];
+                $arr[$i]['date_m'] = $row['date_m'];
+                $arr[$i]['date_y'] = $row['date_y'];
+                $ratArray = [];
+                $sqlQuery = "SELECT rp.* FROM {$this->db_table} AS p JOIN rat_photo_ids AS rp ON p.id = rp.photo_id WHERE p.id = ? ORDER BY p.id, rp.id";
+                $stmt2 = $this->conn->prepare($sqlQuery);
+
+                $stmt2->bindParam(1, $row['id']);
+
+                $stmt2->execute();
+                while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
+                    array_push($ratArray, $row2['rat_id']);
+                }
+                $arr[$i]['rat_ids'] = $ratArray;
+                $i++;
+            }
             return $arr;
         }
 
