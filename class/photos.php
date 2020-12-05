@@ -59,15 +59,20 @@
             return $arr;
         }
 
-        public function getPhotosQuery($all_alive, $rat_ids, $date_m, $date_y){
+        public function getPhotosQuery($all_alive, $rat_ids, $date_m, $date_y, $to_date_m, $to_date_y){
             $and_date_d = "";
             if (isset($date_m) && $date_m > 0 && isset($date_y) && $date_y > 0) {
-                $and_date_d = "AND ( (p.date_m >= {$date_m} AND p.date_y = {$date_y}) OR (p.date_y > {$date_y}) )";
+                $and_date_d = "AND ((p.date_m >= {$date_m} AND p.date_y = {$date_y}) OR (p.date_y > {$date_y}) ";
             } else if ($date_m < 0 && (isset($date_y) && $date_y > 0)) {
                 $and_date_d = " AND (p.date_y >= {$date_y}) ";
-            } else if ($date_y < 0 && (isset($date_m) && $date_m > 0)) {
-                $and_date_d = " AND p.date_m = {$date_m} ";
             }
+
+            if (isset($to_date_m) && $to_date_m > 0 && isset($to_date_y) && $to_date_y > 0) {
+                $and_date_d = $and_date_d . "AND ((p.date_m <= {$to_date_m} AND p.date_y = {$to_date_y}) OR (p.date_y < {$to_date_y})) ";
+            } else if ($date_m < 0 && (isset($to_date_y) && $to_date_y > 0)) {
+                $and_date_d = $and_date_d . "AND (p.date_y <= {$to_date_y}) ";
+            }
+
             $query = "";
             if ($all_alive == 1 || empty($rat_ids)) {
                 $query = "SELECT DISTINCT p.* FROM {$this->db_table} AS p JOIN rat_photo_ids AS rp ON p.id = rp.photo_id JOIN rats as r ON rp.rat_id = r.id WHERE r.is_alive = 1 " . $and_date_d . " ORDER BY p.id";

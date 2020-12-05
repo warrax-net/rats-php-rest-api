@@ -15,7 +15,7 @@
 
     $data = json_decode(file_get_contents("php://input"));
     
-    $stmt = $items->getPhotosQuery($data->all_alive, $data->rat_ids, $data->date_m, $data->date_y);
+    $stmt = $items->getPhotosQuery($data->all_alive, $data->rat_ids, $data->from_date_m, $data->from_date_y, $data->to_date_m, $data->to_date_y);
     
     $itemCount = count($stmt);
     if($itemCount > 0){
